@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Post } from "./post";
 import { Observable, of } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
 })
 export class PostService {
-  private poststs: Post[] = [
+  private posts: Post[] = [
     {
       id: 1,
       title: "Първа публикация за Angular",
@@ -42,6 +43,16 @@ export class PostService {
   ];
 
   getPosts(): Observable<Post[]> {
-    return of(this.poststs);
+    return of(this.posts);
+  }
+  getPostsById(id: number): Observable<Post | undefined> {
+    console.log("Searching for post with ID:", id);
+    return this.getPosts().pipe(
+      map((posts) => {
+        const foundPost = posts.find((post) => post.id === id);
+        console.log("Found Post:", foundPost);
+        return foundPost;
+      })
+    );
   }
 }

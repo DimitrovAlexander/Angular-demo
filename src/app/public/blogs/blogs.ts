@@ -6,7 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { CardModule } from "primeng/card";
 import { ButtonModule } from "primeng/button";
 import { InputTextModule } from "primeng/inputtext";
-import { AutoCompleteModule } from "primeng/autocomplete";
+import { SelectModule } from "primeng/select";
 import { RatingModule } from "primeng/rating";
 import { RouterModule } from "@angular/router";
 
@@ -20,7 +20,7 @@ import { RouterModule } from "@angular/router";
     InputTextModule,
     RatingModule,
     RouterModule,
-    AutoCompleteModule,
+    SelectModule,
   ],
   templateUrl: "./blogs.html",
   styleUrl: "./blogs.scss",
@@ -30,29 +30,49 @@ export class Blogs implements OnInit {
   filtreredPosts: Post[] = [];
   sortOptions: any[];
   selectedSortOption: any;
+  searchTerm: string = "";
+
   constructor(private postService: PostService) {
     this.sortOptions = [
-      { label: "Newest", value: "newest" },
-      { label: "Most Popularи", value: "views" },
-      { label: "Highest ratedг", value: "rating" },
+      { name: "Newest", value: "newest" },
+      { name: "Most Popular", value: "views" },
+      { name: "Highest rated", value: "rating" },
     ];
   }
   ngOnInit(): void {
     this.postService.getPosts().subscribe((posts) => {
       this.posts = posts;
-      this.filtreredPosts = [...this.posts];
+      this.applyFiltersAndSort(); // 2. Call the function after getting posts
     });
   }
-  onSortChange(event: any) {
-    let value = event.value;
-    if (value === "newest") {
-      this.filtreredPosts.sort(
-        (a, b) => b.publishedDate.getTime() - a.publishedDate.getTime()
+
+  // 3. Create a single function to handle both filtering and sorting
+  applyFiltersAndSort() {
+    let tempPosts = [...this.posts]; // Start with a fresh copy of all posts
+
+    // Filter by search term
+    if (this.searchTerm) {
+      tempPosts = tempPosts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          post.body.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
-    } else if (value === "views") {
-      this.filtreredPosts.sort((a, b) => b.views - a.views);
-    } else if (value === "rating") {
-      this.filtreredPosts.sort((a, b) => b.rating - a.rating);
     }
+
+    // Sort the filtered posts
+    if (this.selectedSortOption) {
+      const sortValue = this.selectedSortOption.value;
+      if (sortValue === "newest") {
+        tempPosts.sort(
+          (a, b) => b.publishedDate.getTime() - a.publishedDate.getTime()
+        );
+      } else if (sortValue === "views") {
+        tempPosts.sort((a, b) => b.views - a.views);
+      } else if (sortValue === "rating") {
+        tempPosts.sort((a, b) => b.rating - a.rating);
+      }
+    }
+
+    this.filtreredPosts = tempPosts; // Update the posts array displayed in the UI
   }
 }
