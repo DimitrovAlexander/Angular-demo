@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Post } from "./post";
-import { Observable, of } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable({
@@ -54,5 +54,29 @@ export class PostService {
         return foundPost;
       })
     );
+  }
+  createPost(newPost: Post): Observable<Post> {
+    const newId =
+      this.posts.length > 0 ? Math.max(...this.posts.map((p) => p.id)) + 1 : 1;
+    newPost.id = newId;
+    this.posts.push(newPost);
+    return of(newPost);
+  }
+
+  // Нов метод за редактиране на пост
+  updatePost(updatedPost: Post): Observable<Post> {
+    const index = this.posts.findIndex((p) => p.id === updatedPost.id);
+    if (index > -1) {
+      this.posts[index] = updatedPost;
+      return of(updatedPost);
+    }
+    return throwError(() => new Error("Post not found.")); // Връщаме null или грешка, ако не е намерен
+  }
+
+  // Нов метод за изтриване на пост
+  deletePost(id: number): Observable<boolean> {
+    const initialLength = this.posts.length;
+    this.posts = this.posts.filter((post) => post.id !== id);
+    return of(this.posts.length < initialLength);
   }
 }

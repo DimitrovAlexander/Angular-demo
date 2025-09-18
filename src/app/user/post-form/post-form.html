@@ -1,0 +1,51 @@
+<div class="container mx-auto py-12 px-4">
+  <div class="max-w-xl mx-auto">
+    <p-card [header]="isEditMode ? 'Редактирай публикация' : 'Създай нова публикация'" class="shadow-lg">
+      <form (ngSubmit)="onSubmit()">
+        <div class="mb-4">
+          <span class="p-float-label">
+            <input
+              id="title"
+              type="text"
+              pInputText
+              [(ngModel)]="post.title"
+              name="title"
+              class="w-full"
+              required
+            />
+            <label for="title">Заглавие</label>
+          </span>
+        </div>
+
+        <div class="mb-6">
+          <span class="p-float-label">
+            <textarea
+              id="body"
+              [rows]="10"
+              pInputTextarea
+              [(ngModel)]="post.body"
+              name="body"
+              class="w-full"
+              required
+            ></textarea>
+            <label for="body">Съдържание</label>
+          </span>
+        </div>
+
+        <div class="flex justify-end space-x-2">
+          <p-button
+            [label]="isEditMode ? 'Редактирай' : 'Създай'"
+            type="submit"
+            [disabled]="!post.title || !post.body"
+            styleClass="p-button-primary"
+          ></p-button>
+          <p-button
+            label="Отказ"
+            [routerLink]="['/profile']"
+            styleClass="p-button-text"
+          ></p-button>
+        </div>
+      </form>
+    </p-card>
+  </div>
+</div>

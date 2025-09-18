@@ -1,0 +1,97 @@
+<div class="container mx-auto py-12 px-4">
+  <h1 class="text-4xl font-bold text-center mb-8">Добре дошъл в таблото си</h1>
+
+  <div class="flex justify-between items-center mb-6">
+    <div class="bg-gray-800 p-4 rounded-lg shadow">
+      <h2 class="text-xl font-semibold text-white">
+        Общо преглеждания:
+        <span class="text-primary-color">{{ totalViews }}</span>
+      </h2>
+    </div>
+    <p-button
+      label="Създай нов пост"
+      [routerLink]="['/create-post']"
+      styleClass="p-button-primary"
+    ></p-button>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <p-card header="Преглеждания на публикациите" class="shadow-lg">
+      <p-chart type="pie" [data]="chartData" [options]="chartOptions"></p-chart>
+    </p-card>
+
+    <p-card header="Най-оценени публикации" class="shadow-lg">
+      <p-table
+        [value]="topRatedPosts.slice(0, 5)"
+        [paginator]="false"
+        [rows]="5"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Заглавие</th>
+            <th>Рейтинг</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-post>
+          <tr>
+            <td>{{ post.title }}</td>
+            <td>
+              <p-rating [(ngModel)]="post.rating" [readonly]="true"></p-rating>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+
+    <p-card header="Най-четени публикации" class="shadow-lg">
+      <p-table
+        [value]="mostViewedPosts.slice(0, 5)"
+        [paginator]="false"
+        [rows]="5"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Заглавие</th>
+            <th>Преглеждания</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-post>
+          <tr>
+            <td>{{ post.title }}</td>
+            <td>{{ post.views }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+
+  <p-card header="Всички мои публикации" class="shadow-lg">
+    <p-table [value]="userPosts" [paginator]="true" [rows]="5">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Заглавие</th>
+          <th>Дата на публикуване</th>
+          <th>Действия</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-post>
+        <tr>
+          <td>{{ post.title }}</td>
+          <td>{{ post.publishedDate | date }}</td>
+          <td>
+            <p-button
+              icon="pi pi-pencil"
+              [routerLink]="['/edit-post', post.id]"
+              styleClass="p-button-rounded p-button-text p-mr-2"
+            ></p-button>
+            <p-button
+              icon="pi pi-trash"
+              (click)="deletePost(post.id)"
+              styleClass="p-button-rounded p-button-danger"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

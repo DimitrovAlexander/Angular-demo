@@ -4,6 +4,11 @@ import { Home } from "./home/home";
 import { PublicLayout } from "./shared/public-layout/public-layout";
 import { Blogs } from "./public/blogs/blogs";
 import { PostDetails } from "./public/post-details/post-details";
+import { Login } from "./auth/login/login";
+import { Register } from "./auth/register/register";
+import { DashboardComponent } from "./user/dashboard/dashboard";
+import { AuthGuard } from "./user/auth/auth";
+import { PostForm } from "./user/post-form/post-form";
 
 export const routes: Routes = [
   {
@@ -22,6 +27,23 @@ export const routes: Routes = [
         path: "blogs/:id",
         component: PostDetails,
       },
+      { path: "login", component: Login }, // Добави маршрут за логин
+      { path: "register", component: Register },
     ],
   }, // Дефинираме маршрут за основната страница
+  {
+    path: "profile",
+    component: DashboardComponent,
+    canActivate: [AuthGuard], // Приложи Guard-а тук
+  },
+  {
+    path: "create-post",
+    component: PostForm,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "edit-post/:id",
+    component: PostForm,
+    canActivate: [AuthGuard],
+  },
 ];

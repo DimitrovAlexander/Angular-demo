@@ -26,7 +26,8 @@ export class HeaderComponent implements OnInit {
         icon: "pi pi-star",
       },
       {
-        label: "Contact",
+        label: "Profile",
+        routerLink: "profile",
         icon: "pi pi-envelope",
       },
     ];
