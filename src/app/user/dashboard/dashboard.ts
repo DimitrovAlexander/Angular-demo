@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { PostService } from "../../post.service";
-import { Post } from "../../post";
+import { ArticleService } from "../../article.service";
+import { Article } from "../../article";
 import { CommonModule } from "@angular/common";
 import { CardModule } from "primeng/card";
 import { ButtonModule } from "primeng/button";
@@ -26,18 +26,18 @@ import { RatingModule } from 'primeng/rating';
   styleUrl: "./dashboard.scss",
 })
 export class DashboardComponent implements OnInit {
-  userPosts: Post[] = [];
+  userPosts: Article[] = [];
   totalViews: number = 0;
-  topRatedPosts: Post[] = [];
-  mostViewedPosts: Post[] = [];
+  topRatedPosts: Article[] = [];
+  mostViewedPosts: Article[] = [];
   chartData: any;
   chartOptions: any;
 
-  constructor(private postService: PostService) {}
+  constructor(private articleService: ArticleService) {}
 
   ngOnInit(): void {
-    this.postService.getPosts().subscribe((posts) => {
-      this.userPosts = posts;
+    this.articleService.getArticles().subscribe((articles) => {
+      this.userPosts = articles;
       this.calculateMetrics();
       this.prepareChartData();
     });
@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit {
 
   calculateMetrics(): void {
     // Изчисляване на общия брой преглеждания
-    this.totalViews = this.userPosts.reduce((sum, post) => sum + post.views, 0);
+    this.totalViews = this.userPosts.reduce((sum, article) => sum + article.views, 0);
 
     // Сортиране на постовете
     this.topRatedPosts = [...this.userPosts].sort(
@@ -61,10 +61,10 @@ export class DashboardComponent implements OnInit {
     const textColor = documentStyle.getPropertyValue("--text-color");
 
     this.chartData = {
-      labels: this.userPosts.map((post) => post.title),
+      labels: this.userPosts.map((article) => article.title),
       datasets: [
         {
-          data: this.userPosts.map((post) => post.views),
+          data: this.userPosts.map((article) => article.views),
           backgroundColor: [
             documentStyle.getPropertyValue("--p-primary-color"),
             documentStyle.getPropertyValue("--p-secondary-color"),
@@ -93,8 +93,11 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  deletePost(id: number): void {
-    console.log("Deleting post with ID:", id);
-    // Добави логика за изтриване от API
-  }
+   deleteArticle(id: number): void {
+    this.articleService.deletePost(id).subscribe(success => {
+      if (success) {
+        this.userPosts = this.userPosts.filter(article => article.id !== id);
+      }
+    });
+}
 }

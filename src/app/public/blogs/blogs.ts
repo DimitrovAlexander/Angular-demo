@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Post } from "../../post";
-import { PostService } from "../../post.service";
+import { Article } from "../../article";
+import { ArticleService } from "../../article.service";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { CardModule } from "primeng/card";
@@ -26,13 +26,13 @@ import { RouterModule } from "@angular/router";
   styleUrl: "./blogs.scss",
 })
 export class Blogs implements OnInit {
-  posts: Post[] = [];
-  filtreredPosts: Post[] = [];
+  posts: Article[] = [];
+  filtreredPosts: Article[] = [];
   sortOptions: any[];
   selectedSortOption: any;
   searchTerm: string = "";
 
-  constructor(private postService: PostService) {
+  constructor(private articleService: ArticleService) {
     this.sortOptions = [
       { name: "Newest", value: "newest" },
       { name: "Most Popular", value: "views" },
@@ -40,7 +40,7 @@ export class Blogs implements OnInit {
     ];
   }
   ngOnInit(): void {
-    this.postService.getPosts().subscribe((posts) => {
+    this.articleService.getArticles().subscribe((posts) => {
       this.posts = posts;
       this.applyFiltersAndSort(); // 2. Call the function after getting posts
     });

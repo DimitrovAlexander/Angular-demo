@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { Post } from "../../post";
-import { PostService } from "../../post.service";
+import { Article } from "../../article";
+import { ArticleService } from "../../article.service";
 import { CommonModule } from "@angular/common";
 import { CardModule } from "primeng/card";
 import { RatingModule } from "primeng/rating";
@@ -21,17 +21,17 @@ import { FormsModule } from "@angular/forms";
   styleUrl: "./post-details.scss",
 })
 export class PostDetails {
-  post: Post | undefined;
+  post: Article | undefined;
   constructor(
     private route: ActivatedRoute,
-    private postService: PostService,
+    private articleServoce: ArticleService,
     private router: Router
   ) {}
   ngOnInit(): void {
     const postId = this.route.snapshot.paramMap.get("id");
     if (postId) {
       console.log("Start search");
-      this.postService.getPostsById(+postId).subscribe((post) => {
+      this.articleServoce.getArticlesById(+postId).subscribe((post) => {
         if (post) {
           this.post = post;
         } else {

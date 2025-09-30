@@ -2,11 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { PostService } from "../..//post.service";
-import { Post } from "../../post";
+import { ArticleService } from "../../article.service";
+import { Article, ArticleCategory } from "../../article";
 import { InputTextModule } from "primeng/inputtext";
 import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
+import { EditorModule } from "primeng/editor"; // For rich text editing
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 
 @Component({
   selector: "app-post-form",
@@ -18,34 +20,46 @@ import { CardModule } from "primeng/card";
     ButtonModule,
     CardModule,
     RouterModule,
+    AutoCompleteModule, // 1. Add AutoCompleteModule to imports
   ],
   templateUrl: "./post-form.html",
   styleUrl: "./post-form.scss",
 })
-export class PostForm implements OnInit {
+export class ArticleForm implements OnInit {
   isEditMode: boolean = false;
-  post: Post = {
+  article: Article = {
     id: 0,
     title: "",
     body: "",
     views: 0,
     rating: 0,
     publishedDate: new Date(),
+    category: "Crime",
+    comments: [],
   };
+  
+  allCategories: ArticleCategory[] = [ // 2. Rename to allCategories
+    "Crime",
+    "Sports",
+    "Politics",
+    "International",
+    "Lifestyle",
+  ];
+  filteredCategories: ArticleCategory[] = []; // 3. Add property for filtered results
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private postService: PostService
+    private articleService: ArticleService
   ) {}
 
   ngOnInit(): void {
-    const postId = this.route.snapshot.paramMap.get("id");
-    if (postId) {
+    const articleId = this.route.snapshot.paramMap.get("id");
+    if (articleId) {
       this.isEditMode = true;
-      this.postService.getPostsById(+postId).subscribe((post) => {
-        if (post) {
-          this.post = post;
+      this.articleService.getArticlesById(+articleId).subscribe((article) => {
+        if (article) {
+          this.article = article;
         } else {
           this.router.navigate(["/profile"]); // Пренасочване, ако постът не е намерен
         }
@@ -55,15 +69,23 @@ export class PostForm implements OnInit {
 
   onSubmit(): void {
     if (this.isEditMode) {
-      this.postService.updatePost(this.post).subscribe(() => {
-        console.log("Post updated successfully!");
+      this.articleService.updatePost(this.article).subscribe(() => {
+        console.log("Article updated successfully!");
         this.router.navigate(["/profile"]);
       });
     } else {
-      this.postService.createPost(this.post).subscribe(() => {
+      this.articleService.createPost(this.article).subscribe(() => {
         console.log("Post created successfully!");
         this.router.navigate(["/profile"]);
       });
     }
+  }
+
+  // 4. Implement the search method
+  searchCategory(event: AutoCompleteCompleteEvent) {
+    let query = event.query.toLowerCase();
+    this.filteredCategories = this.allCategories.filter(category => 
+      category.toLowerCase().includes(query)
+    );
   }
 }

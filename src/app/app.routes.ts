@@ -8,7 +8,7 @@ import { Login } from "./auth/login/login";
 import { Register } from "./auth/register/register";
 import { DashboardComponent } from "./user/dashboard/dashboard";
 import { AuthGuard } from "./user/auth/auth";
-import { PostForm } from "./user/post-form/post-form";
+import { ArticleForm } from "./user/post-form/post-form";
 
 export const routes: Routes = [
   {
@@ -20,11 +20,11 @@ export const routes: Routes = [
         component: Home,
       },
       {
-        path: "blogs",
+        path: "news",
         component: Blogs,
       },
       {
-        path: "blogs/:id",
+        path: "news/:id",
         component: PostDetails,
       },
       { path: "login", component: Login }, // Добави маршрут за логин
@@ -37,13 +37,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard], // Приложи Guard-а тук
   },
   {
-    path: "create-post",
-    component: PostForm,
+    path: "create-article",
+    component: ArticleForm,
     canActivate: [AuthGuard],
   },
   {
-    path: "edit-post/:id",
-    component: PostForm,
+    path: "edit-article/:id",
+    component: ArticleForm,
     canActivate: [AuthGuard],
   },
 ];

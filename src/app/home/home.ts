@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
 import { HeroComponent } from "./hero/hero";
-import { LatestPosts } from "./latestblogs/latestblogs";
+import { LatestNewsComponent } from "./latestnews/latestnews";
 @Component({
   selector: "app-home",
-  imports: [HeroComponent, LatestPosts],
+  imports: [HeroComponent, LatestNewsComponent],
   templateUrl: "./home.html",
   styleUrl: "./home.scss",
 })
