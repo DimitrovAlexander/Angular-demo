@@ -1,0 +1,35 @@
+<div *ngIf="post" class="container mx-auto py-12 px-4">
+  <div class="max-w-4xl mx-auto">
+    <p-card [header]="post.title" class="shadow-lg">
+      <div class="mb-4 text-gray-500 text-sm">
+        Публикуван на {{ post.publishedAt | date:'mediumDate' }} |
+        Преглеждания: {{ post.views }}
+      </div>
+
+      <div class="mb-6">
+        <p-rating [ngModel]="post.rating" [readonly]="true"></p-rating>
+      </div>
+
+      <p class="text-lg leading-relaxed text-gray-700 whitespace-pre-wrap">
+        {{ post.body }}
+      </p>
+
+      <div class="mt-8 flex justify-end">
+        <p-button
+          label="Към всички постове"
+          [routerLink]="['/blogs']"
+          styleClass="p-button-text p-button-sm"
+        ></p-button>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<div *ngIf="!post" class="container mx-auto py-12 px-4 text-center">
+  <h2>Постът не е намерен.</h2>
+  <p-button
+    label="Към всички постове"
+    [routerLink]="['/blogs']"
+    styleClass="p-button-text"
+  ></p-button>
+</div>
